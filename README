@@ -20,7 +20,7 @@ A Website data container requires 3 volumes:
  - /git
  - /etc/nginx (TODO)
 
-docker create --name <custom-name> website-data   [TODO]
+docker create --name <custom-name> website-data
 
 
 Website
@@ -42,3 +42,10 @@ Use the command run_crotal.sh to initialize the website
 docker run --rm -ti --volumes-from <website-data-container> crotal /run_crotal.sh
 
 
+SSH Reverse Proxy
+=================
+
+Incomplete!!!
+
+Use the 'command' option to forward the ssh connection.
+This is not complete yet, since a sensible strategy to share public/private keys needs to be found.
