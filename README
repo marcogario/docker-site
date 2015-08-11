@@ -11,6 +11,7 @@ The DEFAULT_HOST can be omitted.
 We then add a new virtual host by specifying the env variable VIRTUAL_HOST:
   docker run -e VIRTUAL_HOST=foo.bar.com  ...
 
+Remember to use --restart=always to enable restart of the service
 
 Website Data
 ============
@@ -29,13 +30,18 @@ Website
 We use crotal as demo for website container. This provides an ssh
 server that needs to be exposed.
 
-docker run --name <website>_repo -d -p 2022:22 --volumes-from <website-data-container> crotal
+docker run --name <website>_repo \
+       -d -p 2022:22 --volumes-from <website-data-container> \
+       --restart always \
+       crotal
 
 Expose the website using a nginx server:
 
-docker run --name <website>_www -d -e VIRTUAL_HOST=<url> \
-       --volumes-from <website-data-container> nginx-local
-
+docker run --name <website>_www \
+       -d -e VIRTUAL_HOST=<url> \
+       --volumes-from <website-data-container> \
+       --restart always \
+       nginx-local
 
 Use the command run_crotal.sh to initialize the website
 

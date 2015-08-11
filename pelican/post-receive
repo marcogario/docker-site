@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+## store the arguments given to the script
+read oldrev newrev refname
+
+## Where to store the log information about the updates
+LOGFILE=./post-receive.log
+
+# The deployed directory (the running site)
+WORKDIR=/home/git/pelican-site-tmp
+DEPLOYDIR=/www/
+
+##  Record the fact that the push has been received
+echo -e "Received Push Request at $( date +%F )" >> $LOGFILE
+echo " - Old SHA: $oldrev New SHA: $newrev Branch Name: $refname" >> $LOGFILE
+
+## Update the deployed copy
+echo "Starting Deploy" >> $LOGFILE
+
+echo "START: Checkout code"
+if [ ! -e "$WORKDIR" ]
+then
+    echo "WARNING: Creating directory $WORKDIR"
+    mkdir $WORKDIR
+fi
+GIT_WORK_TREE="$WORKDIR" git checkout -f
+echo "END: Checkout code"
+
+echo "START: Generate"
+cd "$WORKDIR"; pelican content;
+echo "END: Generate"
+
+echo "START: Deploy"
+# In crotal 0.7.0 the output is in preview/
+rm -Rf $DEPLOYDIR/*
+cp -av $WORKDIR/output/* $DEPLOYDIR/
+echo "END: Deploy"
+
+echo "Finished Deploy" >> $LOGFILE
